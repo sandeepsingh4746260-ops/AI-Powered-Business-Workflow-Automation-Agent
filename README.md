@@ -38,7 +38,7 @@ This response means Google has suspended the **project/consumer associated with 
 1. Revoke/delete the exposed key in Google AI Studio / Google Cloud Console. Never paste API keys into chat, screenshots, GitHub, or Loom.
 2. Open Google Cloud Console and check the associated project status, billing, and policy notices. Reactivate it if Google allows.
 3. If that project cannot be restored, create/select a different active project, enable the **Generative Language API**, and create a new Gemini API key there.
-4. Replace `GEMINI_API_KEY` in the project's `.env` file. Keep `GEMINI_MODEL=gemini-2.5-flash` unless the model is unavailable to your account.
+4. Replace `GEMINI_API_KEY` in the project's `.env` file. Keep `GEMINI_MODEL=gemini-3.8-flash` unless the model is unavailable to your account.
 5. Stop and restart Streamlit so the app reloads `.env`. The app now prioritizes the project-local `.env` over stale terminal environment variables and shows a readable error instead of dumping provider details.
 6. Run `python -m pytest -q` to test offline workflow logic. For a Gemini live test, select **Gemini auto-select** after the key/project is fixed.
 
@@ -142,3 +142,15 @@ Do not change failure rows to `success` just to produce a 100% figure. A genuine
 ## WF002 loss-risk rule
 
 `products.csv` price is treated as the selling price; `vendor_prices.csv` price is treated as vendor cost. If vendor cost exceeds selling price by any amount, WF002 flags `LOSS RISK` and reports the difference. This is no longer gated by a 10% threshold. Equal prices are break-even; vendor cost below selling price is not flagged by this specific rule. Missing vendor matches and invalid prices remain exceptions. Example: selling price ₹525 and vendor cost ₹549 means a ₹24 loss risk. This calculation does not include taxes, shipping, marketplace fees, or other costs unless added to the data.
+
+
+## Gemini model availability
+
+The default model is `gemini-3.8-flash`, the current stable Flash model listed in the official Gemini API model documentation at the time this project was updated. Model availability is still controlled by the Google project/key. If your key returns a model `NOT_FOUND` response, check the model list available to that key in Google AI Studio / the Gemini API, then set `GEMINI_MODEL` in `.env` to an exact supported model ID and restart Streamlit. Changing the model name will not fix a suspended project or invalid key.
+
+
+## One-click custom workflow builder
+
+The Streamlit app includes a **One-click workflow builder**. Enter a workflow name, trigger, optional inputs/steps/decision rule, and a response/output, then click **Create workflow**. The new workflow is appended to the `Workflows` sheet in `data/AI_Agent_Workflow_Assessment.xlsx`, assigned the next ID (for example `WF011`), and becomes available after the app reruns. The **Manage custom workflows** panel lists and deletes custom-response workflows.
+
+**Scope note:** these no-code workflows return the response configured in the Excel `Expected_Output` field. They do not execute arbitrary business operations or modify external data. For a workflow that calculates values, updates records, reads a new dataset, or calls an external API, implement a Python function in `app/tools.py` and register it in `TOOL_REGISTRY` in `app/engine.py`.

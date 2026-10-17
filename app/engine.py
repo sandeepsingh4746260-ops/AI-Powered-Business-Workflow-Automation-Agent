@@ -56,7 +56,8 @@ class WorkflowEngine:
         workflow = next((w for w in self.workflows if w["Workflow_ID"] == workflow_id), None)
         if workflow is None:
             return {"error": f"Selected workflow {workflow_id} is not present in the workbook.", "steps": []}
-        if workflow_id not in TOOL_REGISTRY:
+        is_custom_response = str(workflow.get("Tools_Required", "")).strip().lower() == "custom_response"
+        if workflow_id not in TOOL_REGISTRY and not is_custom_response:
             return {"selected_workflow": {"id": workflow_id, "name": workflow["Workflow_Name"]},
                     "error": f"Workflow {workflow_id} exists in Excel but has no registered execution tool. Add a tool and register it in TOOL_REGISTRY.",
                     "steps": [{"step": "Tool availability check", "status": "failed", "detail": "No executor registered."}]}
@@ -68,13 +69,22 @@ class WorkflowEngine:
             steps.append({"step": "Validate required inputs", "status": "needs_input", "detail": "; ".join(map(str, missing))})
 
         try:
-            executor = TOOL_REGISTRY[workflow_id]
-            if workflow_id == "WF003":
-                result = executor(uploaded_file=uploaded_file)
-            elif workflow_id in {"WF004", "WF005", "WF007", "WF008", "WF009"}:
-                result = executor(user_request)
+            if is_custom_response:
+                result = {
+                    "custom_workflow": True,
+                    "workflow_id": workflow_id,
+                    "message": str(workflow.get("Expected_Output", "")).strip(),
+                    "user_request": user_request,
+                    "note": "This no-code workflow returns the response configured in Excel. For data-changing or calculation tasks, implement a Python tool and register it in TOOL_REGISTRY.",
+                }
             else:
-                result = executor()
+                executor = TOOL_REGISTRY[workflow_id]
+                if workflow_id == "WF003":
+                    result = executor(uploaded_file=uploaded_file)
+                elif workflow_id in {"WF004", "WF005", "WF007", "WF008", "WF009"}:
+                    result = executor(user_request)
+                else:
+                    result = executor()
 
             # The step plan is read from Excel. A successful tool result means the
             # workflow executor completed its documented plan; conditions are shown separately.

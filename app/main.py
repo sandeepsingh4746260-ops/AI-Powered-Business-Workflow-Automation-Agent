@@ -31,6 +31,25 @@ with st.sidebar:
     except Exception:
         chosen = ""
 
+with st.expander("➕ Add New Workflow (no-code custom response)", expanded=False):
+    st.caption("Yahan workflow define karo. Save karne par workflow Excel catalog mein add ho jayega aur bina Python code likhe configured response de sakega.")
+    with st.form("add_custom_workflow_form", clear_on_submit=True):
+        new_name = st.text_input("Workflow name", placeholder="Delivery Policy Helper")
+        new_trigger = st.text_input("When should it run?", placeholder="User asks about delivery policy")
+        new_inputs = st.text_input("Required inputs", value="User request")
+        new_keywords = st.text_input("Keywords (comma-separated)", placeholder="delivery, shipping, delivery time")
+        new_steps = st.text_area("Steps", value="Read request → Return configured response", height=70)
+        new_logic = st.text_area("Decision logic / instructions", value="Return the configured response for this custom workflow.", height=70)
+        new_output = st.text_area("Configured response", placeholder="Delivery usually takes 3-5 business days.", height=90)
+        submitted = st.form_submit_button("Create workflow", type="primary")
+        if submitted:
+            try:
+                created = create_custom_workflow(new_name, new_trigger, new_inputs, new_keywords, new_steps, new_logic, new_output)
+                st.success(f"Created {created['Workflow_ID']} — {created['Workflow_Name']}. Refreshing workflow catalog...")
+                st.rerun()
+            except Exception as exc:
+                st.error(f"Could not create workflow: {exc}")
+
 request = st.text_area("User request", value=chosen, height=110,
                        placeholder="Example: Which products need restocking?")
 upload = st.file_uploader("Optional vendor file (WF003 only)", type=["csv", "xlsx", "xls"])

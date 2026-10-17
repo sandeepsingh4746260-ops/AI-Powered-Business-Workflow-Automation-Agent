@@ -1,0 +1,10 @@
+order_id,customer_email,items,order_status,shipment_status,tracking_number
+ORD-1001,customer1@example.com,Steel Water Bottle x2,Shipped,In transit,TRK-882100
+ORD-1002,customer2@example.com,Yoga Mat x1,Processing,Label created,
+ORD-1003,customer3@example.com,Travel Mug x3,Delivered,Delivered,TRK-882103
+ORD-1004,customer4@example.com,Wireless Mouse x1,Shipped,In transit,TRK-882104
+ORD-1005,customer5@example.com,USB-C Hub x1,Processing,Not shipped,
+ORD-1006,customer6@example.com,Notebook Set x2,Cancelled,Cancelled,
+ORD-1007,customer7@example.com,LED Desk Light x1,Delivered,Delivered,TRK-882107
+ORD-1008,customer8@example.com,Reusable Lunch Box x2,Shipped,Label created,TRK-882108
+ORD-1009,customer9@example.com,Webcam x1,Processing,Not shipped,

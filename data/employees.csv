@@ -1,0 +1,11 @@
+employee,skills,current_workload,capacity,availability
+Aarav,"python, backend, api, sql",3,8,yes
+Meera,"data, python, machine learning, ai",5,8,yes
+Kabir,"frontend, testing, excel",2,7,yes
+Isha,"python, api, testing",7,8,no
+Nisha,"sql, data, excel, reporting",2,7,yes
+Rohan,"python, machine learning, ai, data",4,9,yes
+Priya,"frontend, backend, api, python",6,9,yes
+Dev,"testing, sql, excel, automation",1,6,yes
+Ananya,"design, content, marketing, seo",3,7,yes
+Vikram,"backend, api, cloud, python",8,9,yes
